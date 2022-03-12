@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "Interactive map";
+}
+
+<html>
+<div class="row">
+    
+        <div>Latitude: <input type="text" id="lat" style="margin-left:1%"></div>
+        <div style="margin-top:1%">Longitude: <input type="text" id="long"></div>
+        <div style="margin-top:1%"><button onclick="coordinates()">Submit coordinates</button></div>
+        <div style="margin-top:1%">
+            <button id="plus">+ Zoom in</button>
+            <button id="negative">- Zoom out</button>
+        </div>
+        <div style="margin-top:1%"><button id="siemens" onclick="backsiemens()">Back to Siemens</button></div>
+    
+
+    <div id="map">
+
+    </div>
+
+
+
+</div>
+<script>
+    //default zoom variable
+    let zoom = 12;
+    //coordinates of office taken from google maps
+    let long = 24.982552501850268
+    let lat = 55.09362424551508
+    //function that integrates with here maps api(Map Image) and returns a map image with dynamic zoom and longitude and latitude
+    async function goToCoordinate() {
+        try {
+            const response = await fetch("https://image.maps.ls.hereapi.com/mia/1.6/mapview?apiKey=uf0TRBLYh8Jcl72HVJ6RUqw8F_87xh8YYlibTMmRihE&c=" + long + "," + lat + "&z=" + zoom);
+            const myImage = await response; //extract JSON from the http response
+            let img = document.createElement('img');
+            img.src = myImage.url;
+            img.style.width = "400px"
+            img.style.height = "600px"
+            document.getElementById('map').innerHTML = "";
+            document.getElementById('map').appendChild(img);
+        }
+        catch (e) {
+            alert("There has been an error calling the API");
+        }
+
+    }
+    goToCoordinate();
+    //zoom in
+    document.getElementById("plus").onclick = function () {
+        zoom = zoom + 1
+        goToCoordinate()
+
+    }
+    //zoom out
+    document.getElementById("negative").onclick = function () {
+        zoom = zoom - 1
+        goToCoordinate()
+    }
+
+    function coordinates() {
+        lat = document.getElementById("lat").value;
+        long = document.getElementById("long").value;
+        goToCoordinate()
+    }
+
+    function backsiemens() {
+        long = 24.982552501850268
+        lat = 55.09362424551508
+        goToCoordinate()
+
+    }
+
+</script>
+</html>
